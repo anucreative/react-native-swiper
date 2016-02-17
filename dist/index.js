@@ -5,11 +5,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                                                                                                                                                                                                                                                                    * @author leecade<leecade@163.com>
                                                                                                                                                                                                                                                                    */
 
+
 // Using bare setTimeout, setInterval, setImmediate
 // and requestAnimationFrame calls is very dangerous
 // because if you forget to cancel the request before
 // the component is unmounted, you risk the callback
 // throwing an exception.
+
 
 var _reactNative = require('react-native');
 
@@ -106,6 +108,7 @@ var styles = _reactNative.StyleSheet.create({
 module.exports = _reactNative2.default.createClass({
   displayName: 'exports',
 
+
   /**
    * Props Validation
    * @type {Object}
@@ -158,6 +161,7 @@ module.exports = _reactNative2.default.createClass({
     };
   },
 
+
   /**
    * Init states
    * @return {object} states
@@ -165,6 +169,7 @@ module.exports = _reactNative2.default.createClass({
   getInitialState: function getInitialState() {
     return this.initState(this.props);
   },
+
 
   /**
    * autoplay timer
@@ -204,6 +209,7 @@ module.exports = _reactNative2.default.createClass({
     return initState;
   },
 
+
   /**
    * Automatic rolling
    */
@@ -222,6 +228,7 @@ module.exports = _reactNative2.default.createClass({
     }, this.props.autoplayTimeout * 1000);
   },
 
+
   /**
    * Scroll begin handle
    * @param  {object} e native event
@@ -238,6 +245,7 @@ module.exports = _reactNative2.default.createClass({
       _this2.props.onScrollBeginDrag && _this2.props.onScrollBeginDrag(e, _this2.state, _this2);
     });
   },
+
 
   /**
    * Scroll end handle
@@ -341,6 +349,7 @@ module.exports = _reactNative2.default.createClass({
     });
   },
 
+
   /**
    * Scroll by index
    * @param  {number} index offset index
@@ -374,6 +383,7 @@ module.exports = _reactNative2.default.createClass({
       autoplayEnd: false
     });
   },
+
 
   /**
    * Render pagination
@@ -553,7 +563,7 @@ module.exports = _reactNative2.default.createClass({
 
     for (var prop in props) {
       // if(~scrollResponders.indexOf(prop)
-      if (typeof props[prop] === 'function' && prop !== 'onPageSelected' && prop !== 'renderPagination' && prop !== 'onPageScroll') {
+      if (typeof props[prop] === 'function' && prop !== 'onMomentumScrollEnd' && prop !== 'onPageSelected' && prop !== 'renderPagination' && prop !== 'onPageScroll') {
         (function () {
           var originResponder = props[prop];
           props[prop] = function (e) {

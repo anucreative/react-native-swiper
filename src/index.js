@@ -168,7 +168,7 @@ module.exports = React.createClass({
 
   componentWillMount() {
     this.props = Platform.OS === 'ios' ? this.injectState(this.props) : this.injectStateAndroid(this.props);
-    
+
   },
 
   componentWillReceiveProps(props) {
@@ -191,7 +191,7 @@ module.exports = React.createClass({
     initState.dir = props.horizontal == false ? 'y' : 'x'
     initState.width = props.width || width
     initState.height = props.height || height
-    
+
     //android not use offset
     if (Platform.OS === 'ios' && initState.total > 1) {
       initState.offset = {}
@@ -271,7 +271,7 @@ module.exports = React.createClass({
     this.setState({
       isScrolling: false
     })
-    
+
     this.updateIndexAndroid(e.nativeEvent.position, this.state.dir)
 
     if(e.nativeEvent.position < 1){
@@ -291,8 +291,8 @@ module.exports = React.createClass({
 
   updateIndexAndroid(position, dir) {
     let state = this.state
-    let index = position - 1 
-    
+    let index = position - 1
+
 
     if(this.props.loop) {
       if(index < 0) {
@@ -494,11 +494,11 @@ module.exports = React.createClass({
             {...this.props}
             index={this.state.index}
             onPageScroll={this.onScrollBeginAndroid}
-            onPageSelected={this.onScrollEndAndroid} 
+            onPageSelected={this.onScrollEndAndroid}
             initialPage={1}>
             {pages}
          </ViewPagerAndroid>
-         
+
       );
     }
   },
@@ -543,6 +543,7 @@ module.exports = React.createClass({
     for(let prop in props) {
       // if(~scrollResponders.indexOf(prop)
       if(typeof props[prop] === 'function'
+        && prop !== 'onMomentumScrollEnd'
         && prop !== 'onPageSelected'
         && prop !== 'renderPagination'
         && prop !== 'onPageScroll'
