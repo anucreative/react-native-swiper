@@ -274,12 +274,6 @@ module.exports = React.createClass({
 
     this.updateIndexAndroid(e.nativeEvent.position, this.state.dir)
 
-    if(e.nativeEvent.position < 1){
-        //avoid animation shark
-        this.setTimeout(()=>{
-          this.refs.scrollView.setPageWithoutAnimation(this.state.total)
-        },500);
-    }
     if(e.nativeEvent.position > this.state.total){
         //avoid animation shark
         this.setTimeout(()=>{
