@@ -284,12 +284,6 @@ module.exports = _reactNative2.default.createClass({
 
     this.updateIndexAndroid(e.nativeEvent.position, this.state.dir);
 
-    if (e.nativeEvent.position < 1) {
-      //avoid animation shark
-      this.setTimeout(function () {
-        _this4.refs.scrollView.setPageWithoutAnimation(_this4.state.total);
-      }, 500);
-    }
     if (e.nativeEvent.position > this.state.total) {
       //avoid animation shark
       this.setTimeout(function () {
