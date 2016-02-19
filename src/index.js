@@ -480,21 +480,21 @@ module.exports = React.createClass({
              {pages}
             </ScrollView>
          );
-     }else{
-      //android
+     }
+     if (Platform.OS === 'android'){
       return (
          <ViewPagerAndroid ref="scrollView"
             style={{flex: 1}}
             {...this.props}
-            index={this.state.index}
             onPageScroll={this.onScrollBeginAndroid}
             onPageSelected={this.onScrollEndAndroid}
-            initialPage={1}>
+            initialPage={this.state.index}>
             {pages}
          </ViewPagerAndroid>
 
       );
     }
+    return <View/>;
   },
   /**
    * Inject state to ScrollResponder

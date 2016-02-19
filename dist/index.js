@@ -498,20 +498,20 @@ module.exports = _reactNative2.default.createClass({
           onMomentumScrollEnd: this.onScrollEnd }),
         pages
       );
-    } else {
-      //android
+    }
+    if (_reactNative.Platform.OS === 'android') {
       return _reactNative2.default.createElement(
         _reactNative.ViewPagerAndroid,
         _extends({ ref: 'scrollView',
           style: { flex: 1 }
         }, this.props, {
-          index: this.state.index,
           onPageScroll: this.onScrollBeginAndroid,
           onPageSelected: this.onScrollEndAndroid,
-          initialPage: 1 }),
+          initialPage: this.state.index }),
         pages
       );
     }
+    return _reactNative2.default.createElement(_reactNative.View, null);
   },
 
   /**
