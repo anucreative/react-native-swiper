@@ -259,7 +259,8 @@ module.exports = _reactNative2.default.createClass({
       isScrolling: false
     });
 
-    this.updateIndexIOS(e.nativeEvent.contentOffset, this.state.dir);
+    this.updateIndex(e.nativeEvent, this.state.dir);
+
     // Note: `this.setState` is async, so I call the `onMomentumScrollEnd`
     // in setTimeout to ensure synchronous update `index`
     this.setTimeout(function () {
@@ -268,29 +269,37 @@ module.exports = _reactNative2.default.createClass({
       // if `onMomentumScrollEnd` registered will be called here
       _this3.props.onMomentumScrollEnd && _this3.props.onMomentumScrollEnd(e, _this3.state, _this3);
     });
-  },
-  onScrollBeginAndroid: function onScrollBeginAndroid(e, offset) {
-    this.autoplay();
-  },
-  onScrollEndAndroid: function onScrollEndAndroid(e) {
-    var _this4 = this;
 
-    this.autoplay();
-
-    // update scroll state
-    this.setState({
-      isScrolling: false
-    });
-
-    this.updateIndexAndroid(e.nativeEvent.position, this.state.dir);
-
-    if (e.nativeEvent.position > this.state.total) {
-      //avoid animation shark
-      this.setTimeout(function () {
-        _this4.refs.scrollView.setPageWithoutAnimation(1);
-      }, 500);
+    if (_reactNative.Platform.OS === 'android') {
+      if (e.nativeEvent.position > this.state.total) {
+        //avoid animation shark
+        this.setTimeout(function () {
+          _this3.refs.scrollView.setPageWithoutAnimation(1);
+        }, 500);
+      }
     }
   },
+
+
+  /**
+   * Update index after scroll
+   * @param  {object} event nativeEvent
+   * @param  {string} dir    'x' || 'y'
+   */
+  updateIndex: function updateIndex(event, dir) {
+    if (_reactNative.Platform.OS === 'ios') {
+      updateIndexIOS(event.offset, dir);
+    } else if (_reactNative.Platform.OS === 'android') {
+      updateIndexAndroid(event.position, dir);
+    }
+  },
+
+
+  /**
+   * Update index after scroll for Android
+   * @param  {object} position content position
+   * @param  {string} dir    'x' || 'y'
+   */
   updateIndexAndroid: function updateIndexAndroid(position, dir) {
     var state = this.state;
     var index = position;
@@ -307,6 +316,7 @@ module.exports = _reactNative2.default.createClass({
       index: index
     });
   },
+
 
   /**
    * Update index after scroll
@@ -349,7 +359,7 @@ module.exports = _reactNative2.default.createClass({
    * @param  {number} index offset index
    */
   scrollTo: function scrollTo(index) {
-    var _this5 = this;
+    var _this4 = this;
 
     if (this.state.total < 2) return;
     var state = this.state;
@@ -361,12 +371,12 @@ module.exports = _reactNative2.default.createClass({
     if (_reactNative.Platform.OS === 'ios') {
       if (this.state.isScrolling) return;
       this.refs.scrollView && this.refs.scrollView.scrollTo(y, x);
-    } else {
+    } else if (_reactNative.Platform.OS === 'android') {
       this.updateIndexAndroid(diff);
       this.refs.scrollView && this.refs.scrollView.setPage(diff);
       if (this.state.index == 0) {
         this.setTimeout(function () {
-          _this5.refs.scrollView.setPageWithoutAnimation(1);
+          _this4.refs.scrollView.setPageWithoutAnimation(1);
         }, 500);
       }
     }
@@ -429,7 +439,7 @@ module.exports = _reactNative2.default.createClass({
     ) : null;
   },
   renderNextButton: function renderNextButton() {
-    var _this6 = this;
+    var _this5 = this;
 
     var button = undefined;
 
@@ -444,7 +454,7 @@ module.exports = _reactNative2.default.createClass({
     return _reactNative2.default.createElement(
       _reactNative.TouchableOpacity,
       { onPress: function onPress() {
-          return button !== null && _this6.scrollTo.call(_this6, 1);
+          return button !== null && _this5.scrollTo.call(_this5, 1);
         } },
       _reactNative2.default.createElement(
         _reactNative.View,
@@ -454,7 +464,7 @@ module.exports = _reactNative2.default.createClass({
     );
   },
   renderPrevButton: function renderPrevButton() {
-    var _this7 = this;
+    var _this6 = this;
 
     var button = null;
 
@@ -469,7 +479,7 @@ module.exports = _reactNative2.default.createClass({
     return _reactNative2.default.createElement(
       _reactNative.TouchableOpacity,
       { onPress: function onPress() {
-          return button !== null && _this7.scrollTo.call(_this7, -1);
+          return button !== null && _this6.scrollTo.call(_this6, -1);
         } },
       _reactNative2.default.createElement(
         _reactNative.View,
@@ -498,15 +508,14 @@ module.exports = _reactNative2.default.createClass({
           onMomentumScrollEnd: this.onScrollEnd }),
         pages
       );
-    }
-    if (_reactNative.Platform.OS === 'android') {
+    } else if (_reactNative.Platform.OS === 'android') {
       return _reactNative2.default.createElement(
         _reactNative.ViewPagerAndroid,
         _extends({ ref: 'scrollView',
           style: { flex: 1 }
         }, this.props, {
-          onPageScroll: this.onScrollBeginAndroid,
-          onPageSelected: this.onScrollEndAndroid,
+          onPageScroll: this.onScrollBegin,
+          onPageSelected: this.onScrollEnd,
           initialPage: this.state.index }),
         pages
       );
@@ -520,15 +529,7 @@ module.exports = _reactNative2.default.createClass({
    * @return {object} props injected props
    */
   injectState: function injectState(props) {
-    var _this8 = this;
-
-    /*    const scrollResponders = [
-          'onMomentumScrollBegin',
-          'onTouchStartCapture',
-          'onTouchStart',
-          'onTouchEnd',
-          'onResponderRelease',
-        ]*/
+    var _this7 = this;
 
     for (var prop in props) {
       // if(~scrollResponders.indexOf(prop)
@@ -536,7 +537,7 @@ module.exports = _reactNative2.default.createClass({
         (function () {
           var originResponder = props[prop];
           props[prop] = function (e) {
-            return originResponder(e, _this8.state, _this8);
+            return originResponder(e, _this7.state, _this7);
           };
         })();
       }
@@ -545,15 +546,7 @@ module.exports = _reactNative2.default.createClass({
     return props;
   },
   injectStateAndroid: function injectStateAndroid(props) {
-    var _this9 = this;
-
-    /*    const scrollResponders = [
-          'onMomentumScrollBegin',
-          'onTouchStartCapture',
-          'onTouchStart',
-          'onTouchEnd',
-          'onResponderRelease',
-        ]*/
+    var _this8 = this;
 
     for (var prop in props) {
       // if(~scrollResponders.indexOf(prop)
@@ -561,7 +554,7 @@ module.exports = _reactNative2.default.createClass({
         (function () {
           var originResponder = props[prop];
           props[prop] = function (e) {
-            return originResponder(e, _this9.state, _this9);
+            return originResponder(e, _this8.state, _this8);
           };
         })();
       }

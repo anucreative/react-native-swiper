@@ -251,7 +251,8 @@ module.exports = React.createClass({
       isScrolling: false
     })
 
-    this.updateIndexIOS(e.nativeEvent.contentOffset, this.state.dir)
+    this.updateIndex(e.nativeEvent, this.state.dir)
+
     // Note: `this.setState` is async, so I call the `onMomentumScrollEnd`
     // in setTimeout to ensure synchronous update `index`
     this.setTimeout(() => {
@@ -260,29 +261,36 @@ module.exports = React.createClass({
       // if `onMomentumScrollEnd` registered will be called here
       this.props.onMomentumScrollEnd && this.props.onMomentumScrollEnd(e, this.state, this)
     })
-  },
-  onScrollBeginAndroid(e, offset) {
-    this.autoplay();
-  },
-  onScrollEndAndroid(e) {
-    this.autoplay();
 
-    // update scroll state
-    this.setState({
-      isScrolling: false
-    })
-
-    this.updateIndexAndroid(e.nativeEvent.position, this.state.dir)
-
-    if(e.nativeEvent.position > this.state.total){
+    if(Platform.OS === 'android'){
+      if(e.nativeEvent.position > this.state.total){
         //avoid animation shark
         this.setTimeout(()=>{
           this.refs.scrollView.setPageWithoutAnimation(1)
         },500);
+      }
+    }
+
+  },
+
+  /**
+   * Update index after scroll
+   * @param  {object} event nativeEvent
+   * @param  {string} dir    'x' || 'y'
+   */
+  updateIndex(event, dir) {
+    if (Platform.OS === 'ios') {
+      updateIndexIOS( event.offset, dir );
+    } else if (Platform.OS === 'android') {
+      updateIndexAndroid( event.position, dir );
     }
   },
 
-
+  /**
+   * Update index after scroll for Android
+   * @param  {object} position content position
+   * @param  {string} dir    'x' || 'y'
+   */
   updateIndexAndroid(position, dir) {
     let state = this.state
     let index = position
@@ -300,6 +308,7 @@ module.exports = React.createClass({
       index: index
     })
   },
+
   /**
    * Update index after scroll
    * @param  {object} offset content offset
@@ -351,7 +360,7 @@ module.exports = React.createClass({
     if(Platform.OS === 'ios'){
       if(this.state.isScrolling) return;
       this.refs.scrollView && this.refs.scrollView.scrollTo(y, x)
-    }else{
+    }else if(Platform.OS === 'android'){
       this.updateIndexAndroid(diff);
       this.refs.scrollView && this.refs.scrollView.setPage(diff)
       if(this.state.index == 0){
@@ -468,29 +477,27 @@ module.exports = React.createClass({
   },
 
   renderScrollView(pages) {
-      if (Platform.OS === 'ios'){
-         return (
-            <ScrollView ref="scrollView"
-             {...this.props}
-                       contentContainerStyle={[styles.wrapper, this.props.style]}
-                       contentOffset={this.state.offset}
-                       onScrollBeginDrag={this.onScrollBegin}
-                       onMomentumScrollEnd={this.onScrollEnd}>
-             {pages}
-            </ScrollView>
-         );
-     }
-     if (Platform.OS === 'android'){
+    if (Platform.OS === 'ios'){
       return (
-         <ViewPagerAndroid ref="scrollView"
-            style={{flex: 1}}
-            {...this.props}
-            onPageScroll={this.onScrollBeginAndroid}
-            onPageSelected={this.onScrollEndAndroid}
-            initialPage={this.state.index}>
-            {pages}
-         </ViewPagerAndroid>
-
+        <ScrollView ref="scrollView"
+         {...this.props}
+         contentContainerStyle={[styles.wrapper, this.props.style]}
+         contentOffset={this.state.offset}
+         onScrollBeginDrag={this.onScrollBegin}
+         onMomentumScrollEnd={this.onScrollEnd}>
+         {pages}
+        </ScrollView>
+      );
+    } else if (Platform.OS === 'android'){
+      return (
+        <ViewPagerAndroid ref="scrollView"
+          style={{flex: 1}}
+          {...this.props}
+          onPageScroll={this.onScrollBegin}
+          onPageSelected={this.onScrollEnd}
+          initialPage={this.state.index}>
+          {pages}
+        </ViewPagerAndroid>
       );
     }
     return <View/>;
@@ -501,14 +508,6 @@ module.exports = React.createClass({
    * @return {object} props injected props
    */
   injectState(props) {
-/*    const scrollResponders = [
-      'onMomentumScrollBegin',
-      'onTouchStartCapture',
-      'onTouchStart',
-      'onTouchEnd',
-      'onResponderRelease',
-    ]*/
-
     for(let prop in props) {
       // if(~scrollResponders.indexOf(prop)
       if(typeof props[prop] === 'function'
@@ -525,14 +524,6 @@ module.exports = React.createClass({
   },
 
   injectStateAndroid(props) {
-/*    const scrollResponders = [
-      'onMomentumScrollBegin',
-      'onTouchStartCapture',
-      'onTouchStart',
-      'onTouchEnd',
-      'onResponderRelease',
-    ]*/
-
     for(let prop in props) {
       // if(~scrollResponders.indexOf(prop)
       if(typeof props[prop] === 'function'
