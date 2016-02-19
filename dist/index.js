@@ -290,7 +290,7 @@ module.exports = _reactNative2.default.createClass({
     if (_reactNative.Platform.OS === 'ios') {
       updateIndexIOS(event.offset, dir);
     } else if (_reactNative.Platform.OS === 'android') {
-      updateIndexAndroid(event.position, dir);
+      this.updateIndexAndroid(event.position, dir);
     }
   },
 

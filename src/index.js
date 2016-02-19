@@ -282,7 +282,7 @@ module.exports = React.createClass({
     if (Platform.OS === 'ios') {
       updateIndexIOS( event.offset, dir );
     } else if (Platform.OS === 'android') {
-      updateIndexAndroid( event.position, dir );
+      this.updateIndexAndroid( event.position, dir );
     }
   },
 
