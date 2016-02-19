@@ -285,8 +285,7 @@ module.exports = React.createClass({
 
   updateIndexAndroid(position, dir) {
     let state = this.state
-    let index = position - 1
-
+    let index = position
 
     if(this.props.loop) {
       if(index < 0) {
