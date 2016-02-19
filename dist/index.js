@@ -293,7 +293,7 @@ module.exports = _reactNative2.default.createClass({
   },
   updateIndexAndroid: function updateIndexAndroid(position, dir) {
     var state = this.state;
-    var index = position - 1;
+    var index = position;
 
     if (this.props.loop) {
       if (index < 0) {
