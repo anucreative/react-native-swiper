@@ -288,7 +288,7 @@ module.exports = _reactNative2.default.createClass({
    */
   updateIndex: function updateIndex(event, dir) {
     if (_reactNative.Platform.OS === 'ios') {
-      this.updateIndexIOS(event.offset, dir);
+      this.updateIndexIOS(event.contentOffset, dir);
     } else if (_reactNative.Platform.OS === 'android') {
       this.updateIndexAndroid(event.position, dir);
     }
