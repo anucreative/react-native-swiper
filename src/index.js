@@ -317,6 +317,9 @@ module.exports = React.createClass({
   updateIndexIOS(offset, dir) {
 
     let state = this.state
+
+    if ( !state.offset ) return;
+
     let index = state.index
     let diff = offset[dir] - state.offset[dir]
     let step = dir == 'x' ? state.width : state.height

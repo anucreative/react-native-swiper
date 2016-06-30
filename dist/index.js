@@ -326,6 +326,9 @@ module.exports = _reactNative2.default.createClass({
   updateIndexIOS: function updateIndexIOS(offset, dir) {
 
     var state = this.state;
+
+    if ( !state.offset ) return;
+
     var index = state.index;
     var diff = offset[dir] - state.offset[dir];
     var step = dir == 'x' ? state.width : state.height;
