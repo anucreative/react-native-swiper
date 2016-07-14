@@ -420,7 +420,7 @@ module.exports = React.createClass({
     }
 
     return (
-      <View pointerEvents='none' style={[styles['pagination_' + this.state.dir], this.props.paginationStyle]}>
+      <View pointerEvents='none' accessible={true} accessibilityLabel={'Pagination'} style={[styles['pagination_' + this.state.dir], this.props.paginationStyle]}>
         {dots}
       </View>
     )

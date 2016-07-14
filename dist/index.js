@@ -327,7 +327,7 @@ module.exports = _reactNative2.default.createClass({
 
     var state = this.state;
 
-    if ( !state.offset ) return;
+    if (!state.offset) return;
 
     var index = state.index;
     var diff = offset[dir] - state.offset[dir];
@@ -428,7 +428,7 @@ module.exports = _reactNative2.default.createClass({
 
     return _reactNative2.default.createElement(
       _reactNative.View,
-      { pointerEvents: 'none', style: [styles['pagination_' + this.state.dir], this.props.paginationStyle] },
+      { pointerEvents: 'none', accessible: true, accessibilityLabel: 'Pagination', style: [styles['pagination_' + this.state.dir], this.props.paginationStyle] },
       dots
     );
   },
